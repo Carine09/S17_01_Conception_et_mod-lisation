@@ -1,39 +1,46 @@
 CREATE TABLE `Products`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
-    `type` VARCHAR(255) NOT NULL,
-    `price` FLOAT(53) NOT NULL
+    `price` FLOAT(53) NOT NULL,
+    `category_id` BIGINT NOT NULL
 );
 CREATE TABLE `Tickets`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `product_name` VARCHAR(255) NOT NULL,
-    `total` FLOAT(53) NOT NULL,
-    `lines_number` BIGINT NOT NULL,
-    `fidelity_account` BIGINT NOT NULL,
-    `shops_id` BIGINT NOT NULL
+    `created_at` DATETIME NOT NULL,
+    `shop_id` BIGINT NOT NULL,
+    `user_id` BIGINT NOT NULL
 );
 CREATE TABLE `Shops`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
-    `address` VARCHAR(255) NOT NULL
+    `address` VARCHAR(255) NOT NULL,
+    `message` TEXT NOT NULL,
+    `created_at` DATETIME NOT NULL
 );
-CREATE TABLE `Stocks`(
+CREATE TABLE `Product_tickets`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `products_id` BIGINT NOT NULL,
-    `shops_id` BIGINT NOT NULL
+    `product_id` BIGINT NOT NULL,
+    `ticket_id` BIGINT NOT NULL
 );
-CREATE TABLE `Orders`(
+CREATE TABLE `Users`(
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `products_id` BIGINT NOT NULL,
-    `tickets_id` BIGINT NOT NULL
+    `name` VARCHAR(255) NOT NULL,
+    `created_at` DATETIME NOT NULL,
+    `updated_at` DATETIME NOT NULL,
+    `fidelity_points` BIGINT NOT NULL
+);
+CREATE TABLE `Categories`(
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(255) NOT NULL
 );
 ALTER TABLE
-    `Stocks` ADD CONSTRAINT `stocks_shops_id_foreign` FOREIGN KEY(`shops_id`) REFERENCES `Shops`(`id`);
+    `Products` ADD CONSTRAINT `products_category_id_foreign` FOREIGN KEY(`category_id`) REFERENCES `Categories`(`id`);
 ALTER TABLE
-    `Tickets` ADD CONSTRAINT `tickets_shops_id_foreign` FOREIGN KEY(`shops_id`) REFERENCES `Shops`(`id`);
+    `Tickets` ADD CONSTRAINT `tickets_user_id_foreign` FOREIGN KEY(`user_id`) REFERENCES `Users`(`id`);
 ALTER TABLE
-    `Orders` ADD CONSTRAINT `orders_tickets_id_foreign` FOREIGN KEY(`tickets_id`) REFERENCES `Tickets`(`id`);
+    `Tickets` ADD CONSTRAINT `tickets_shop_id_foreign` FOREIGN KEY(`shop_id`) REFERENCES `Shops`(`id`);
 ALTER TABLE
-    `Orders` ADD CONSTRAINT `orders_products_id_foreign` FOREIGN KEY(`products_id`) REFERENCES `Products`(`id`);
+    `Product_tickets` ADD CONSTRAINT `product_tickets_ticket_id_foreign` FOREIGN KEY(`ticket_id`) REFERENCES `Tickets`(`id`);
 ALTER TABLE
-    `Stocks` ADD CONSTRAINT `stocks_products_id_foreign` FOREIGN KEY(`products_id`) REFERENCES `Products`(`id`);
+    `Product_tickets` ADD CONSTRAINT `product_tickets_product_id_foreign` FOREIGN KEY(`product_id`) REFERENCES `Products`(`id`);
